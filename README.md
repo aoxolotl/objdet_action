@@ -14,15 +14,15 @@ DataTorch action. Currently used for internal evaluation only.
 ## Quick Start
 
 ```yaml
-name: Object Detection
+name: Object Detector
 
 triggers:
   # Adds a button to the annotator.
   annotatorButton:
-    name: "Object Detector"
+    name: "Obj Det Whole File"
     icon: brain
-    # Annotator will prompt the user for 4 points before triggering the pipeline
-    flow: 4-points
+    flow: whole-file
+  # flow: 2-points
 
 jobs:
   predict:
@@ -35,14 +35,19 @@ jobs:
           fileId: ${{ event.fileId }}
           name: ${{ event.fileName }}
 
-      - name: Predict BBoxes
+      - name: Predict BoundingBox
         action: aoxolotl/objdet_action@latest
         inputs:
           # Download file path from the previous action.
           imagePath: ${{ variable.path }}
-          # Get the 4 points the user clicked
-          points: ${{ event.flowData.points }}
-          # Annotation created by the four points
+
+          # Get the file id from action input
+          fileId: ${{ event.fileId }}
+          # Get the 2 points the user clicked
+          # points: ${{ event.flowData.points }}
+
+          # Annotation created by the four points. We will insert the
+          # bounding box into this annotation
           annotationId: ${{ event.annotationId }}
 ```
 
